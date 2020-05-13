@@ -1,15 +1,7 @@
 import numpy as np
 from math import pi
-"Раздел переменных, не инициализируемых в классе Двигатель"
-"Скорость самолёта"
-V_aircraft = 50
-# масса самолёта
-weight = 1000
-# коэф-ы для системы управления
-kp = 10.0
-ki = 0.2
 # время моделирования
-dt = 1/50
+dt = 1/500
 "Режим 1/0"
 mode = 1
 # режимы полёта
@@ -26,12 +18,25 @@ class Engine(object):
     def __init__(self,propeller_R = 1.2):
         self.propeller_R = propeller_R
         self.integral_result = 0
+        self.mode = 0.5
+        self.last_dv = 0
+        self.I = 0.3 #интегрирующее звено
+
+    def function_upr_get_mode(self):
+        self.I += self.dv*0.05
+        self.mode = self.I*dt*10+(self.dv-self.last_dv)/dt*0.1 + 0.01*self.dv
+        self.last_dv = self.dv
+        if (self.mode > 1):
+            self.mode = 1
+        elif (self.mode < 0):
+            self.mode = 0       
     
     # Функция получения входных данных
     def Set_data(self, current_speed, spec_speed, AirDensity):
         self.current_speed = current_speed
         self.spec_speed = spec_speed
         self.air_density = AirDensity
+        self.dv = self.delta_speed(self.spec_speed, self.current_speed)
     
     # Функция расчёта режима полёта
     def Get_mode(self,mode):
@@ -52,12 +57,6 @@ class Engine(object):
     def delta_speed(self,speed1,speed2):
         return speed1-speed2
 
-    # Функция вычисления заданную угловую скорость вращения двигателя
-    def spec_omega(self, spec_speed, current_speed):
-        ds = self.delta_speed(spec_speed, current_speed)
-        self.integral_result = self.integral_result + ds * dt
-        return kp * ds + ki * self.integral_result
-
     # Функция вычисления крутящего момента двигателя
     def torque(self, omega, spec_speed):
         tractive_power = self.get_tractive_power(omega, spec_speed)
@@ -67,7 +66,8 @@ class Engine(object):
 
     # Функция вывода значений
     def Get_data(self):
-        sp_omega = self.Get_mode(0.9)
+        self.function_upr_get_mode()
+        sp_omega = self.Get_mode(self.mode)
         thrust = self.get_tractive_power(sp_omega, self.current_speed)
         moment = self.torque(sp_omega, self.spec_speed)
         return thrust, moment,sp_omega

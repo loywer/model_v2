@@ -4,10 +4,9 @@ from matplotlib import pyplot as plt
 #eps_theta = 0.01       # |(theta_now - theta_spec)| > eps_theta
 dt = 0.002
 
-kp_elev = 0.1
-ki_elev = 0.5
-kd_elev = 0.0
-
+kp_elev = 2.5
+ki_elev = 1.5
+kd_elev = 0.5
 kp_eleron = 0.5
 
 t = 0
@@ -45,7 +44,7 @@ class Control:
         global elev_spec
         
         self.transition_function_elev = self.aperiodic_link(T_elev)
-        self.delta_theta = -theta_now + theta_spec
+        self.delta_theta = theta_now - theta_spec
         dd_theta = (self.delta_theta - last) / dt
         I = I + self.delta_theta * (ki_elev*dt) 
         last = self.delta_theta

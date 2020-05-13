@@ -91,7 +91,7 @@ class Aerodunamic():
         self.V_abs = self.get_V_abs()
         a = self.get_acceleration()
         self.n = a - np.dot(self.NSK_SSK,self.G) 
-        self.n = self.n/self.g
+        self.n = a/self.g
         e = self.get_acceleration_angle()
         s_theta,s_gamma,s_psi = self.AngleSpeed_Ailer()
         self.V = self.Integrator(self.V,a,0.002)
