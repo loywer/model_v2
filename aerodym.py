@@ -24,6 +24,7 @@ class Aerodunamic():
         self.P=np.array([00000,0,0])
         self.ro = 1.25
         self.aileron = 0.0
+        self.M_d =np.array([0,0,0])
     def get_acceleration(self):
         Cx = c172.get_Cx(self.alpha,self.betta)
         Cy = c172.get_Cy(self.alpha,self.alpha_dot,self.elevator,self.w,self.V_abs)
@@ -32,7 +33,7 @@ class Aerodunamic():
         F_aero = np.array([-Cx,Cy,Cz])*q
         buff =  np.dot(self.VSK_SSK,F_aero)
 
-        F = F_aero-np.cross(self.w,self.V)+np.dot(self.NSK_SSK,self.G) +self.P/c172.mass
+        F = buff-np.cross(self.w,self.V)+np.dot(self.NSK_SSK,self.G) +self.P/c172.mass
         return F
     def get_acceleration_angle(self):
         J = c172.inertia
@@ -45,9 +46,9 @@ class Aerodunamic():
         e = np.dot(np.linalg.inv(J),M-buff)
         return e
     def get_NSK_SSK(self):
-        result = np.array([[cos(self.theta)*cos(self.psi),sin(self.theta),-cos(self.theta)*sin(self.psi)],
+        result = np.array([[cos(self.theta)*cos(self.psi),sin(self.theta),  -cos(self.theta)*sin(self.psi)],
                            [sin(self.gamma)*sin(self.psi)-cos(self.gamma)*sin(self.theta)*cos(self.psi),cos(self.gamma)*cos(self.theta),sin(self.gamma)*cos(self.psi)+cos(self.gamma)*sin(self.psi)*sin(self.theta)],
-                           [cos(self.gamma)*sin(self.psi)+sin(self.gamma)*sin(self.theta)*cos(self.psi),-sin(self.gamma)*cos(self.psi),cos(self.gamma)*cos(self.psi)-sin(self.gamma)*sin(self.theta)*sin(self.psi)]])
+                           [cos(self.gamma)*sin(self.psi)+sin(self.gamma)*sin(self.theta)*cos(self.psi),-sin(self.gamma)*cos(self.theta),cos(self.gamma)*cos(self.psi)-sin(self.gamma)*sin(self.theta)*sin(self.psi)]])
         return result
     def get_VSK_SSK(self):
         result = np.array([[cos(self.betta)*cos(self.alpha),sin(self.alpha),-sin(self.betta)*cos(self.alpha)],
@@ -91,7 +92,7 @@ class Aerodunamic():
         self.V_abs = self.get_V_abs()
         a = self.get_acceleration()
         self.n = a - np.dot(self.NSK_SSK,self.G) 
-        self.n = a/self.g
+        self.n = self.n/self.g
         e = self.get_acceleration_angle()
         s_theta,s_gamma,s_psi = self.AngleSpeed_Ailer()
         self.V = self.Integrator(self.V,a,0.002)

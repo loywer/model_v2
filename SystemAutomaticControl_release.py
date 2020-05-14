@@ -4,10 +4,14 @@ from matplotlib import pyplot as plt
 #eps_theta = 0.01       # |(theta_now - theta_spec)| > eps_theta
 dt = 0.002
 
-kp_elev = 2.5
-ki_elev = 1.5
-kd_elev = 0.5
-kp_eleron = 0.5
+    kp_elev = 14.0
+    ki_elev = 2.5
+    kd_elev = 1.0
+
+    kp_eleron = 1.8
+    kd_eleron = 0.005
+
+
 
 t = 0
 T_elev = 5
@@ -67,7 +71,7 @@ class Control:
         self.transition_function_eleron = self.aperiodic_link(T_eleron)
         self.delta_gamma = gamma_spec - gamma_now
         #self.eleron_spec = self.delta_gamma * kp_eleron - 3*w0
-        eleron_spec = self.delta_gamma * kp_eleron - 0.05*w0
+        eleron_spec = self.delta_gamma * kp_eleron - kd_eleron * w0
         self.eleron_now = eleron_spec 
 
         if (self.eleron_now * 180.0/np.pi >= 20) :

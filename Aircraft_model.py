@@ -26,18 +26,18 @@ class Aircraft:
        #P = np.array([5000,0,0])
        #aileron = 0.01
       # elevator = -0.07
-       self.aerodynamic.set_data(elevator,aileron,0,P,M,ro,g)
-       return theta
+       self.aerodynamic.set_data(elevator,aileron,0.0,P,M,ro,g)
+       return psi,gamma,theta
 H=2000
 angle=np.array([0,0,0])
 V = np.array([50,0.0,0])
 plane = Aircraft(H,V,angle,0.02)
-T=50
+T=80
 t=0
 X=[]
 TT=[]
 while(T>t):
-    x=plane.run(55,0.0,0.2,0.02)
+    x=plane.run(55,0.5,0.1,0.02)
     t+=0.002
 
     X.append(x)
