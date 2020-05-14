@@ -4,12 +4,12 @@ from matplotlib import pyplot as plt
 #eps_theta = 0.01       # |(theta_now - theta_spec)| > eps_theta
 dt = 0.002
 
-    kp_elev = 14.0
-    ki_elev = 2.5
-    kd_elev = 1.0
+kp_elev = 14.0
+ki_elev = 2.5
+kd_elev = 1.0
 
-    kp_eleron = 1.8
-    kd_eleron = 0.005
+kp_eleron = 1.8
+kd_eleron = 0.005
 
 
 

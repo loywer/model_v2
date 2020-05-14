@@ -27,7 +27,7 @@ class Aircraft:
        #aileron = 0.01
       # elevator = -0.07
        self.aerodynamic.set_data(elevator,aileron,0.0,P,M,ro,g)
-       return psi,gamma,theta
+       return theta
 H=2000
 angle=np.array([0,0,0])
 V = np.array([50,0.0,0])
@@ -37,7 +37,8 @@ t=0
 X=[]
 TT=[]
 while(T>t):
-    x=plane.run(55,0.5,0.1,0.02)
+    theta = np.sin(t*2*np.pi)/2.0
+    x=plane.run(55,0.0,theta,0.02)
     t+=0.002
 
     X.append(x)
